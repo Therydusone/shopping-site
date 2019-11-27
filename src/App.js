@@ -6,7 +6,8 @@ import {Switch} from "react-router-dom";
 import {Route} from "react-router-dom";
 import Header from  "./components/header/header.component.jsx"
 import SignInAndSignOutPage from './pages/sign-in-and-sign-out/sign-in-and-sign-out.component'
-import { auth } from './firebase/firebase.utils'
+import { auth, createUserProfileDocument } from './firebase/firebase.utils'
+import { throws } from 'assert';
 
 class App extends React.Component {
   constructor() {
@@ -20,9 +21,24 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-      this.setState({currentUser: user});
-    })
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+
+        userRef.onSnapshot(snapShot => {
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data()
+            }
+          });
+
+          console.log(this.state)
+        })
+      } else {
+      this.setState({currentUser: userAuth})
+      }
+    });
   }
   
   componentWillUnmount() {
@@ -39,7 +55,7 @@ class App extends React.Component {
           <Route path='/signin' component={SignInAndSignOutPage} />
         </Switch>
       </div>
-  );
+    );
   }
 }
 
