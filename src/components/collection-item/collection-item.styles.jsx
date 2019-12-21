@@ -17,7 +17,7 @@ export const CollectionItemContainer = styled.div`
       display: flex;
     }
   }
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 360px) {
     width: 40vw;
     &:hover {
       .image {
@@ -36,7 +36,7 @@ export const AddButton = styled(CustomButton)`
   position: absolute;
   top: 255px;
   display: none;
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 360px) {
     display: block;
     opacity: 0.9;
     min-width: unset; 
